@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual Env
+venv/
+.env/
+
+# Django
+media/
+staticfiles/
+
+# Docker
+postgres_data/
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Environment
+.env
+
+wsl
+docker-compose.prod.yml
+docker-compose.prod.yml
+frontend/node_modules
+frontend/dist

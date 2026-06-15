@@ -24,7 +24,7 @@ class Client(models.Model):
         choices=ClientType.choices,
         default=ClientType.RESIDENTIAL,
     )
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True, default="")
     city = models.CharField(max_length=100, default="Kitchener")
     province = models.CharField(max_length=50, default="ON")
     postal_code = models.CharField(max_length=10, blank=True, default="")

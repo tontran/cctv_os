@@ -29,6 +29,7 @@ class JobListSerializer(serializers.ModelSerializer):
 
     client_name = serializers.CharField(source="client.full_name", read_only=True)
     client_phone = serializers.CharField(source="client.phone", read_only=True)
+    client_address = serializers.SerializerMethodField()
     status_display = serializers.CharField(source="get_status_display", read_only=True)
     photo_count = serializers.SerializerMethodField()
 
@@ -39,6 +40,7 @@ class JobListSerializer(serializers.ModelSerializer):
             "client",
             "client_name",
             "client_phone",
+            "client_address",
             "status",
             "status_display",
             "scheduled_date",
@@ -50,3 +52,8 @@ class JobListSerializer(serializers.ModelSerializer):
 
     def get_photo_count(self, obj):
         return obj.photos.count()
+
+    def get_client_address(self, obj):
+        if obj.location:
+            return obj.location.address
+        return ""

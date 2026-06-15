@@ -125,3 +125,54 @@ class Lead(models.Model):
 
     def __str__(self):
         return f"{self.client.full_name} — {self.status}"
+
+class CCTVSystem(models.Model):
+
+    class CameraType(models.TextChoices):
+        IP = "ip", "IP / Network"
+        ANALOG = "analog", "Analog / HD"
+        UNKNOWN = "unknown", "Unknown"
+
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.CASCADE,
+        related_name="systems",
+    )
+    client = models.ForeignKey(
+        Client,
+        on_delete=models.CASCADE,
+        related_name="systems",
+    )
+    device_name = models.CharField(
+        max_length=255,
+        help_text="e.g. 'Main NVR', 'Outdoor DVR', 'Back Camera System'"
+    )
+    device_id = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text="Serial number or device ID"
+    )
+    username = models.CharField(max_length=100, blank=True, default="")
+    password = models.CharField(max_length=100, blank=True, default="")
+    camera_type = models.CharField(
+        max_length=10,
+        choices=CameraType.choices,
+        default=CameraType.UNKNOWN,
+    )
+    client_port = models.CharField(
+        max_length=10,
+        blank=True,
+        default="",
+        help_text="e.g. 8080, 554, 80"
+    )
+    notes = models.TextField(blank=True, default="")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['location', 'device_name']
+
+    def __str__(self):
+        return f"{self.client.full_name} — {self.location.display_name} — {self.device_name}"

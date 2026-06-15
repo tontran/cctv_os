@@ -2,8 +2,11 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Client, Lead, Location
-from .serializers import ClientSerializer, ClientListSerializer, LeadSerializer, LocationSerializer
+from .models import Client, Lead, Location, CCTVSystem
+from .serializers import (
+    ClientSerializer, ClientListSerializer,
+    LeadSerializer, LocationSerializer, CCTVSystemSerializer
+)
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -55,3 +58,11 @@ class LeadViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["status", "client"]
     ordering_fields = ["created_at", "follow_up_date"]
+
+
+class CCTVSystemViewSet(viewsets.ModelViewSet):
+    queryset = CCTVSystem.objects.all().order_by('client', 'location', 'device_name')
+    serializer_class = CCTVSystemSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['client', 'location', 'camera_type', 'is_active']
+    search_fields = ['device_name', 'device_id', 'client__first_name', 'client__last_name']

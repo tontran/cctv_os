@@ -32,11 +32,14 @@ class QuoteSerializer(serializers.ModelSerializer):
     client_address = serializers.CharField(source="client.address", read_only=True)
     client_phone = serializers.CharField(source="client.phone", read_only=True)
     client_type = serializers.CharField(source="client.client_type", read_only=True)
+    has_job = serializers.SerializerMethodField()
 
     class Meta:
         model = Quote
         fields = "__all__"
 
+    def get_has_job(self, obj):
+        return hasattr(obj, 'job') and obj.job is not None
 
 class QuoteClientSerializer(serializers.ModelSerializer):
     """Client-facing serializer — hides labour/helper breakdown."""

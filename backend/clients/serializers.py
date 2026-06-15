@@ -1,9 +1,24 @@
 from rest_framework import serializers
-from .models import Client, Lead, Location
+from .models import Client, Lead, Location, CCTVSystem
 
+
+class CCTVSystemSerializer(serializers.ModelSerializer):
+    client_name = serializers.CharField(source='client.full_name', read_only=True)
+    location_name = serializers.SerializerMethodField()
+    camera_type_display = serializers.CharField(
+        source='get_camera_type_display', read_only=True
+    )
+
+    class Meta:
+        model = CCTVSystem
+        fields = '__all__'
+
+    def get_location_name(self, obj):
+        return obj.location.display_name
 
 class LocationSerializer(serializers.ModelSerializer):
     client_name = serializers.CharField(source="client.full_name", read_only=True)
+    systems = CCTVSystemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Location
@@ -24,6 +39,7 @@ class ClientSerializer(serializers.ModelSerializer):
     leads = LeadSerializer(many=True, read_only=True)
     total_jobs = serializers.SerializerMethodField()
     total_quotes = serializers.SerializerMethodField()
+    total_systems = serializers.SerializerMethodField()
 
     class Meta:
         model = Client
@@ -34,6 +50,9 @@ class ClientSerializer(serializers.ModelSerializer):
 
     def get_total_quotes(self, obj):
         return obj.quotes.count()
+    
+    def get_total_systems(self, obj):
+        return obj.systems.count()
 
 
 class ClientListSerializer(serializers.ModelSerializer):
